@@ -8,7 +8,14 @@ import {MockShopNotice} from '~/components/MockShopNotice';
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [
+    {title: 'Maison Claire | Thoughtfully Curated Womenswear'},
+    {
+      name: 'description',
+      content:
+        'Maison Claire is a boutique of thoughtfully curated womenswear — timeless pieces for every day.',
+    },
+  ];
 };
 
 /**
@@ -67,8 +74,9 @@ export default function Homepage() {
   return (
     <div className="home">
       {data.isShopLinked ? null : <MockShopNotice />}
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <Hero collection={data.featuredCollection} />
+      <NewArrivals products={data.recommendedProducts} />
+      <StoryBand />
     </div>
   );
 }
@@ -78,16 +86,13 @@ export default function Homepage() {
  *   collection: FeaturedCollectionFragment;
  * }}
  */
-function FeaturedCollection({collection}) {
+function Hero({collection}) {
   if (!collection) return null;
   const image = collection?.image;
   return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
+    <section className="hero">
       {image && (
-        <div className="featured-collection-image">
+        <div className="hero-image">
           <Image
             data={image}
             sizes="100vw"
@@ -95,8 +100,14 @@ function FeaturedCollection({collection}) {
           />
         </div>
       )}
-      <h1>{collection.title}</h1>
-    </Link>
+      <div className="hero-content">
+        <p className="eyebrow">The New Collection</p>
+        <h1>Effortless pieces, thoughtfully&nbsp;curated</h1>
+        <Link className="btn btn-light" to={`/collections/${collection.handle}`}>
+          Shop the Collection
+        </Link>
+      </div>
+    </section>
   );
 }
 
@@ -105,17 +116,17 @@ function FeaturedCollection({collection}) {
  *   products: Promise<RecommendedProductsQuery | null>;
  * }}
  */
-function RecommendedProducts({products}) {
+function NewArrivals({products}) {
   return (
-    <section
-      className="recommended-products"
-      aria-labelledby="recommended-products"
-    >
-      <h2 id="recommended-products">Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
+    <section className="new-arrivals" aria-labelledby="new-arrivals">
+      <div className="section-header">
+        <p className="eyebrow">Just In</p>
+        <h2 id="new-arrivals">New Arrivals</h2>
+      </div>
+      <Suspense fallback={<div className="grid-loading" />}>
         <Await resolve={products}>
           {(response) => (
-            <div className="recommended-products-grid">
+            <div className="new-arrivals-grid">
               {response
                 ? response.products.nodes.map((product) => (
                     <ProductItem key={product.id} product={product} />
@@ -125,7 +136,27 @@ function RecommendedProducts({products}) {
           )}
         </Await>
       </Suspense>
-      <br />
+      <div className="section-footer">
+        <Link className="text-link" to="/collections/all">
+          View all pieces
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function StoryBand() {
+  return (
+    <section className="story-band">
+      <p className="eyebrow">Notre Maison</p>
+      <blockquote>
+        A boutique built on the belief that getting dressed should feel
+        effortless &mdash; every piece chosen with intention, made to be loved
+        for seasons to come.
+      </blockquote>
+      <Link className="text-link" to="/pages/about">
+        Our Story
+      </Link>
     </section>
   );
 }

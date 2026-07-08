@@ -10,13 +10,23 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
       <Await resolve={footerPromise}>
         {(footer) => (
           <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
+            <div className="footer-inner">
+              <p className="footer-wordmark">Maison Claire</p>
+              <p className="footer-tagline">
+                Thoughtfully curated womenswear &mdash; timeless pieces for
+                every day.
+              </p>
+              {footer?.menu && header.shop.primaryDomain?.url && (
+                <FooterMenu
+                  menu={footer.menu}
+                  primaryDomainUrl={header.shop.primaryDomain.url}
+                  publicStoreDomain={publicStoreDomain}
+                />
+              )}
+              <p className="footer-copyright">
+                &copy; {new Date().getFullYear()} Maison Claire
+              </p>
+            </div>
           </footer>
         )}
       </Await>
@@ -114,8 +124,8 @@ const FALLBACK_FOOTER_MENU = {
  */
 function activeLinkStyle({isActive, isPending}) {
   return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
+    fontWeight: isActive ? '500' : undefined,
+    opacity: isPending ? 0.5 : undefined,
   };
 }
 
